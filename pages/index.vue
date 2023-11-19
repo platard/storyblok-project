@@ -1,46 +1,42 @@
-<template>
-    <div v-if="body" v-for="block in body" :key="block._uid" >
-        <Banner v-if="block.component === 'Banner'" :block="block" />
-    </div>
-    <!-- <Teaser v-if="block.component === 'teaser'" :blok="block" /> -->
-</template>
-<!-- <template >
+<!-- <template>
     <h1>index.vue</h1>
-    <div v-if="body">
-        <Banner  :body="dataBanner" />
-    </div>
-    <Feature :body="body" />
-    <div v-if="body">
-        <h2>{{ body[0].Title }}</h2>
-        <p>{{ body[0].subtitle }}</p>
-    </div>
-    <div v-if="body">
-        <h2>{{ body[1].name }}</h2>
-        <img :src="body[1].image.filename" alt="">
-    </div>
+    <LandingBanner v-if="body" :body="dataBanner" />
 </template> -->
+<template>
+    <div v-if="posts">
+        <ol>
+    <div v-for="post in posts" :key="post.id">
+        <li>
+            <NuxtLink :to="`/post/${post.id}`" ><h2 v-html="post.title.rendered"></h2></NuxtLink >
+            <p v-html="post.excerpt.rendered"></p>
+        </li>
+    </div>
+</ol>
+
+    </div>
+    <!-- <div v-for="block in body" :key="block._uid" >
+        <LandingBanner v-if="block.component === 'Banner'" :body="block" />
+        <Feature v-if="block.component === 'feature'" :body="block"/>
+    </div> -->
+</template>
 
 <script>
   export default {
       data: function(){
           return{
-              body:null
+              body:null,
+              posts: null
           }
       },
-    
-    async created() {
-        try {
-        const response = await fetch('https://api-us.storyblok.com/v2/cdn/stories/home?version=draft&token=HEYrNygm9QDpTLSPmXmNAgtt&cv=1700417322')
-        const data = await response.json(); // Set the body data property to the fetched JSON
-        this.body = data.story.content.body
-        } catch (error) {
-        console.error('Error fetching data:', error); // Handle any errors
+      created: function() {
+          fetch('https://wptavern.com/wp-json/wp/v2/posts?_fields=author,id,excerpt,title,link')
+          .then(resp => resp.json())
+          .then(data => this.posts = data)
+      },
+      computed: {
+            dataBanner: function(){
+                return this.body.find(data => data.component === "Banner")
+            }
         }
-    },
-    computed: {
-        dataBanner: function(){
-            return this.body.find(data => data.component === "Banner")
-        }
-    }
   }
 </script>
