@@ -2,8 +2,8 @@
     <h1>index.vue</h1>
     <LandingBanner v-if="body" :body="dataBanner" />
 </template> -->
-<template>
-    <div v-if="posts">
+<template v-if="body">
+    <!-- <div v-if="posts">
         <ol>
     <div v-for="post in posts" :key="post.id">
         <li>
@@ -13,11 +13,11 @@
     </div>
 </ol>
 
-    </div>
-    <!-- <div v-for="block in body" :key="block._uid" >
+    </div> -->
+    <div v-for="block in body" :key="block._uid" >
         <LandingBanner v-if="block.component === 'Banner'" :body="block" />
         <Feature v-if="block.component === 'feature'" :body="block"/>
-    </div> -->
+    </div>
 </template>
 
 <script>
@@ -29,9 +29,9 @@
           }
       },
       created: function() {
-          fetch('https://wptavern.com/wp-json/wp/v2/posts?_fields=author,id,excerpt,title,link')
+          fetch('https://api-us.storyblok.com/v2/cdn/stories/home?version=draft&token=HEYrNygm9QDpTLSPmXmNAgtt&cv=1700417322')
           .then(resp => resp.json())
-          .then(data => this.posts = data)
+          .then(data => this.body = data.story.content.body)
       },
       computed: {
             dataBanner: function(){
